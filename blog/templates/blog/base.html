@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="{% static 'blog/style.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&display=swap" rel="stylesheet"> 
+</head>
+<body>
+    <div class="jumbotron blog-header">
+        <div class="container">
+            <h1><a href="/blog">Django Blog</a></h1>
+            <p>Blog made in Django framework . . .</p>
+        </div>
+    </div>
+    <section class="container">
+        <main class="row" id="main">
+                <section class="col-md-8" id="posts-list">
+                    {% block content %}
+                    {% endblock %}
+                </section>
+                <aside class="col-md-4">
+                    <h2>My blog</h2>
+                    <p>This is my blog.</p>
+                </aside>
+        </main>
+    </section>
+    <footer>
+        
+    </footer>
+</body>
