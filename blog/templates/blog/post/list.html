@@ -1,8 +1,14 @@
 {% extends "blog/base.html" %}
-
+{% load blog_tags %}
 {% block title %}My Blog{% endblock %}
 
 {% block content %}
+    {% if searchquery %}
+        <h2>Posts containing "{{ searchquery }}"</h2>
+        {% if not posts %}
+            <p>0 posts found</p> 
+        {% endif %}
+    {% endif %}
     {% if tag %}
         <h2>Posts tagged with "{{ tag.name }}"</h2>
     {% endif %}
@@ -20,7 +26,7 @@
             <p class="font-weight-light post-info">
                 Published {{ post.publish }} by {{ post.author }}
             </p>
-            {{ post.body|truncatewords:30|linebreaks }}
+            {{ post.body|markdown|truncatewords_html:30 }}
         </article>
     {% endfor %}
     {% include "pagination.html" with page=posts %}

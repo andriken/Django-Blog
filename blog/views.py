@@ -3,18 +3,30 @@ from .models import Post, Comment
 from django.views.generic import ListView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 from taggit.models import Tag
 from django.db.models import Count
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 
 def post_list(request, tag_slug=None):
     object_list = Post.published.all()
     tag = None
+    query = None
 
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
         object_list = object_list.filter(tags__in=[tag])
+
+    if 'query' in request.GET:
+        if len(request.GET.get('query')) > 0:
+            query = request.GET.get('query')
+            search_vector = SearchVector('title', 'body')
+            search_query = SearchQuery(query)
+            object_list = Post.published.annotate(search=search_vector,
+                                                    rank=SearchRank(search_vector, search_query)
+                                                    ).filter(search=search_query).order_by('-rank')
+
 
     paginator = Paginator(object_list, 2) # 3 posts in each page
     page = request.GET.get('page')
@@ -29,7 +41,8 @@ def post_list(request, tag_slug=None):
         posts = paginator.page(paginator.num_pages)
     return render(request,'blog/post/list.html', {'page': page,
                                                 'posts': posts,
-                                                'tag': tag})
+                                                'tag': tag,
+                                                'searchquery': query})
 
 
 """
@@ -99,4 +112,3 @@ def post_share(request, post_id):
     return render(request, 'blog/post/share.html', {'post': post,
                                                         'form': form,
                                                         'sent':sent})
-        

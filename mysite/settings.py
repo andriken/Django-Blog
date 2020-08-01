@@ -35,6 +35,7 @@ EMAIL_HOST_PASSWORD = 'ghndjghn'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+SITE_ID = 1
 
 # Application definition
 
@@ -45,6 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
+    'django.contrib.postgres',
     'blog.apps.BlogConfig',
     'taggit',
 ]
@@ -85,8 +89,13 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'PORT': '5433',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
